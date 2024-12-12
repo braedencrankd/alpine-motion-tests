@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon"
+          type="image/svg+xml"
+          href="/vite.svg" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+
+  <body>
+
+    <main class="container px-2 mx-auto my-20 space-y-20">
+      <h1 class="text-4xl font-black">x-motion Testing Ground</h1>
+
+      <div x-init>
+        <div class="flex flex-wrap gap-2 mb-10">
+          <!-- Playing a named animation -->
+          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                  @click="$motion('box-animation-1').play()">
+            Play
+          </button>
+          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                  @click="$motion('box-animation-1').pause()">
+            Pause
+          </button>
+          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                  @click="$motion('box-animation-1').cancel()">
+            Reset
+          </button>
+        </div>
+        <!-- Defining two different animations on the same element -->
+        <div x-motion:box-animation-1.rotate.90deg.duration.1500ms
+             class="w-24 h-24 bg-indigo-500 rounded-lg"></div>
+      </div>
+
+      <section>
+        <h2 class="mb-8 text-2xl font-semibold">spring()</h2>
+        <div x-data>
+          <button @click="$motion('spring-example').play()"
+                  class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+            Spring
+          </button>
+
+          <!-- box -->
+          <div x-motion:spring-example="{rotate: 90}, {easing: spring()}"
+               class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+        </div>
+      </section>
+
+      <section>
+        <div x-data="{currentRotationPos: 0}">
+          <div class="flex gap-2">
+            <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                    @click="currentRotationPos += 90">
+              +90deg
+            </button>
+            <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                    @click="currentRotationPos -= 90">
+              -90deg
+            </button>
+            <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                    @click="$motion('rotation-example-1').pause()">
+              Pause
+            </button>
+          </div>
+          <div class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"
+               x-motion:rotation-example-1="{ rotate: currentRotationPos }, { duration: 1.5 }"></div>
+        </div>
+      </section>
+
+      <section>
+        <div x-data>
+          <!-- Trigger Timeline -->
+          <button @click="$timeline(['animation-one', 'animation-two'], {duration: 2})"
+                  class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+            Trigger Timeline
+          </button>
+
+          <div>
+            <div x-motion:animation-one="{x: [0, 100]}, {easing: spring()}"
+                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+            <div x-motion:animation-two="{x: [0, 200]}, {at: 0.14}, {easing: spring()}"
+                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+          </div>
+
+        </div>
+      </section>
+      <section>
+        <div x-data>
+
+          <h2 class="mb-8 text-2xl font-semibold">In View</h2>
+
+          <div>
+            <div x-motion:inview-example.in-view="{rotate: [0, 90]}, {duration: 1.5}, {easing: spring()}"
+                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+          </div>
+
+        </div>
+      </section>
+      <section>
+        <div x-data>
+
+          <h2 class="mb-8 text-2xl font-semibold">Nameless In View</h2>
+
+          <div>
+            <div x-motion="{rotate: [0, 180]}, {duration: 1.5}, {easing: spring()}"
+                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <script type="module"
+            src="/main.js"></script>
+  </body>
+
+</html>
