@@ -16,9 +16,34 @@
     <main class="container px-2 mx-auto my-20 space-y-20">
       <h1 class="text-4xl font-black">x-motion Testing Ground</h1>
 
-      <div x-init>
+      <!-- Basic -->
+      <section x-init>
+        <div x-motion="{ rotate: 90 }, { duration: 2.5 }"
+             class="w-24 h-24 bg-indigo-500 rounded-lg"></div>
+      </section>
+
+      <!-- Basic Reactive -->
+      <section x-data="{ currentRotationPos: 0 }">
+        <div class="flex gap-2 mb-10">
+          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                  @click="currentRotationPos += 90">
+            +90deg
+          </button>
+          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                  @click="currentRotationPos -= 90">
+            -90deg
+          </button>
+        </div>
+        <div x-motion="{
+          'rotate-animation': [ { rotate: currentRotationPos }, { easing: spring() } ]
+        }"
+             class="w-24 h-24 bg-indigo-500 rounded-lg"></div>
+      </section>
+
+      <!-- Play/Pause/Reset -->
+       
+      <section x-init>
         <div class="flex flex-wrap gap-2 mb-10">
-          <!-- Playing a named animation -->
           <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
                   @click="$motion('box-animation-1').play()">
             Play
@@ -27,16 +52,14 @@
                   @click="$motion('box-animation-1').pause()">
             Pause
           </button>
-          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                  @click="$motion('box-animation-1').cancel()">
-            Reset
-          </button>
         </div>
-        <!-- Defining two different animations on the same element -->
-        <div x-motion:box-animation-1.rotate.90deg.duration.1500ms
+        <div x-motion="{
+          'box-animation-1': [ { rotate: 90 }, { duration: 1.5 } ]
+        }"
              class="w-24 h-24 bg-indigo-500 rounded-lg"></div>
-      </div>
+      </section> 
 
+      <!-- Spring -->
       <section>
         <h2 class="mb-8 text-2xl font-semibold">spring()</h2>
         <div x-data>
@@ -46,71 +69,39 @@
           </button>
 
           <!-- box -->
-          <div x-motion:spring-example="{rotate: 90}, {easing: spring()}"
-               class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+          <div x-motion="{
+            'spring-example': [ {rotate: 90}, {easing: spring()} ]
+          }"
+              class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
         </div>
       </section>
 
-      <section>
-        <div x-data="{currentRotationPos: 0}">
-          <div class="flex gap-2">
-            <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                    @click="currentRotationPos += 90">
-              +90deg
-            </button>
-            <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                    @click="currentRotationPos -= 90">
-              -90deg
-            </button>
-            <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                    @click="$motion('rotation-example-1').pause()">
-              Pause
-            </button>
-          </div>
-          <div class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"
-               x-motion:rotation-example-1="{ rotate: currentRotationPos }, { duration: 1.5 }"></div>
-        </div>
-      </section>
-
+      <!-- Trigger Timeline -->
       <section>
         <div x-data>
-          <!-- Trigger Timeline -->
-          <button @click="$timeline(['animation-one', 'animation-two'], {duration: 2})"
+          <button @click="$sequence(['animation-one', 'animation-two'])"
                   class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
             Trigger Timeline
           </button>
 
           <div>
-            <div x-motion:animation-one="{x: [0, 100]}, {easing: spring()}"
-                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
-            <div x-motion:animation-two="{x: [0, 200]}, {at: 0.14}, {easing: spring()}"
-                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+            <div id="test-1" x-motion="{
+              'animation-one': [ {x: 100} , { duration: 0.5 } ],
+            }" class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+            <div id="test-2" x-motion="{
+              'animation-two': [ {x: 200 }, { at: 0.14 }, { duration: 1 } ],
+            }" class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
           </div>
-
         </div>
       </section>
+
+      <!-- In View -->
       <section>
+        <h2 class="mb-8 text-2xl font-semibold">In View</h2>
         <div x-data>
-
-          <h2 class="mb-8 text-2xl font-semibold">In View</h2>
-
-          <div>
-            <div x-motion:inview-example.in-view="{rotate: [0, 90]}, {duration: 1.5}, {easing: spring()}"
-                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
-          </div>
-
-        </div>
-      </section>
-      <section>
-        <div x-data>
-
-          <h2 class="mb-8 text-2xl font-semibold">Nameless In View</h2>
-
-          <div>
-            <div x-motion="{rotate: [0, 180]}, {duration: 1.5}, {easing: spring()}"
-                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
-          </div>
-
+          <div x-motion.in-view="{
+            'in-view-example': [ { rotate: 90 }, { duration: 1.5 } ]
+          }" class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
         </div>
       </section>
 
@@ -119,7 +110,7 @@
           <h2 class="mb-8 text-2xl font-semibold">$animate magic 🪄</h2>
           <!-- Trigger Animation -->
           <div>
-            <button @click="$animate('#animate-magic-example', { opacity: 0 }, { duration: 0.5 })"
+            <button @click="$animate('#animate-magic-example', { opacity: 0 }, { easing: 0 })"
                     class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
               Fade Out
             </button>
@@ -131,28 +122,69 @@
 
           <div>
             <div id="animate-magic-example"
-                 class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+                class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
           </div>
 
         </div>
       </section>
-      <section>
+
+      <!-- Scroll modifier -->
+      <section x-data x-ref="scrollModifierContainer" class="h-[50vh] relative">
+        <h2 class="mb-8 text-2xl font-semibold">Scroll modifier</h2>
+
+        <div class="absolute w-2 h-full border border-green-500">
+          <div class="absolute w-2 bg-green-500 h"
+            x-motion.scroll="{ height: ['100%', '0%'] }, { scrollTarget: $refs.scrollModifierContainer }"></div>
+        </div>
+
+
+        <div class="flex sticky top-1/2 justify-center items-center -translate-y-1/2">
+          <div x-motion.scroll="{ rotate: [0, 360] }, { scrollTarget: $refs.scrollModifierContainer }"
+               class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
+        </div>
+      </section>
+      <section x-data>
+        <h2 class="mb-8 text-2xl font-semibold">Scroll modifier x axis</h2>
+
+        <div class="relative w-full h-2 border border-green-500">
+          <div class="absolute h-2 bg-green-500"
+            x-motion.scroll="{ width: ['0%', '100%'] },{ scrollTarget: $refs.scrollModifierContainer }, { scrollAxis: 'x' }, { scrollContainer: $refs.scrollModifierContainer }"></div>
+        </div>
+
+        <div x-ref="scrollModifierContainer" class="overflow-x-auto">
+          <div class="w-[calc(100vw*2)] h-[50vh] relative ">
+  
+           
+    
+              <div x-motion.scroll="{ rotate: [0, 360], left: ['0%', '90%'] }, { scrollTarget: $refs.scrollModifierContainer }, { scrollAxis: 'x' }, { scrollContainer: $refs.scrollModifierContainer }"
+                   class="absolute top-1/2 ml-10 w-24 h-24 bg-teal-400 rounded-lg -translate-y-1/2"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Scroll Magic -->
+      <section x-data class="relative"
+       x-init="$nextTick(() => $scroll($motion('scroll-magic-example'), { target: $el }))">
+
+       <div class="absolute top-0 right-0 w-24 h-0.5 bg-green-500"></div>
+       <div class="absolute top-0 right-0 w-24 text-center text-green-500">Start</div>
+
         <h2 class="mb-8 text-2xl font-semibold">$scroll magic 🪄</h2>
-        <p>
-          Scroll down to see the animation
-        </p>
-        <div x-data x-init="$nextTick(() => $scroll($motion('scroll-magic-example'), { target: document.getElementById('scroll-magic-example-container') }))" id="scroll-magic-example-container">
-          
-          <div class="h-[calc(100vh*2)] relative">
+       
+        <div class="h-[calc(100vh*2)] relative">
 
-            <div class="flex sticky top-1/2 justify-center items-center -translate-y-1/2">
-              <div id="scroll-magic-example"
-                  x-motion:scroll-magic-example="{ transform: ['none', 'rotate(360deg)'] }, { ease: 'linear' }"
-                  class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
-            </div>
+          <div class="flex sticky top-1/2 justify-center items-center -translate-y-1/2">
+            <div id="scroll-magic-example"
+                x-motion="{
+                  'scroll-magic-example': [ { transform: ['none', 'rotate(360deg)'] }, { ease: 'linear' } ]
+                }"
+                class="mt-10 w-24 h-24 bg-teal-400 rounded-lg"></div>
           </div>
         </div>
       </section>
+
+
     </main>
 
     <script type="module"
